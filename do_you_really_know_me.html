@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Do You Really Know Me? 🌸</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Cairo, Fredoka & Quicksand -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Fredoka:wght@400;600;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        softPink: '#FFB6C1',
+                        pinkHover: '#FF9EAA',
+                        pinkLight: '#FFF0F3',
+                        creamBackground: '#FAF7F2',
+                        navyText: '#0F172A',
+                        navyLight: '#1E293B',
+                        pastelPurple: '#F3E8FF'
+                    },
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                        fredoka: ['Fredoka', 'sans-serif'],
+                        quicksand: ['Quicksand', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Cairo', 'Quicksand', sans-serif;
+            background-color: #FAF7F2;
+            color: #0F172A;
+            overflow-x: hidden;
+            touch-action: manipulation;
+            transition: background-color 0.4s ease;
+        }
+
+        /* Particle bursting animation */
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            animation: floatAndFade 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            z-index: 50;
+        }
+
+        @keyframes floatAndFade {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(0.4) rotate(0deg);
+            }
+            50% {
+                opacity: 0.9;
+                transform: translate(calc(-50% + var(--tw-x)), calc(-50% + var(--tw-y))) scale(1.2) rotate(180deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(calc(-50% + var(--tw-x) * 1.4), calc(-50% + var(--tw-y) * 1.4 - 20px)) scale(0.1) rotate(360deg);
+            }
+        }
+
+        /* Silky Glassmorphism */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(16px);
+            border: 2px solid rgba(255, 182, 193, 0.45);
+            box-shadow: 0 16px 35px -10px rgba(255, 182, 193, 0.25), 0 6px 12px -4px rgba(15, 23, 42, 0.04);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Floating background elements */
+        .floating-element {
+            animation: gentleFloat 5s ease-in-out infinite;
+        }
+        @keyframes gentleFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(4deg); }
+        }
+
+        /* Card Slide Transitions */
+        .card-enter {
+            animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(18px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Option Card Styling */
+        .option-card {
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .option-card:hover {
+            transform: translateY(-3px) scale(1.01);
+            border-color: #FFB6C1;
+            background-color: #FFF0F3;
+            box-shadow: 0 10px 22px rgba(255, 182, 193, 0.3);
+        }
+        .option-card.selected {
+            border-color: #FFB6C1 !important;
+            background-color: #FFB6C1 !important;
+            color: #0F172A !important;
+            box-shadow: 0 8px 20px rgba(255, 182, 193, 0.5) !important;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #FAF7F2; }
+        ::-webkit-scrollbar-thumb { background: #FFB6C1; border-radius: 10px; }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col justify-between items-center relative selection:bg-softPink selection:text-navyText">
+
+    <!-- Ambient Background Floating Daisies and Stars -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div class="absolute top-12 right-12 text-softPink opacity-40 text-5xl floating-element" style="animation-delay: 0s;">🌼</div>
+        <div class="absolute top-1/4 left-8 text-pink-300 opacity-40 text-4xl floating-element" style="animation-delay: 1.2s;">✨</div>
+        <div class="absolute bottom-24 right-10 text-softPink opacity-30 text-5xl floating-element" style="animation-delay: 2.5s;">🌸</div>
+        <div class="absolute bottom-1/3 left-12 text-pink-300 opacity-35 text-4xl floating-element" style="animation-delay: 1.8s;">🌙</div>
+    </div>
+
+    <header class="w-full max-w-2xl px-6 pt-6 flex justify-between items-center z-20">
+        <!-- Language Switcher Button -->
+        <button onclick="toggleLanguage()" class="flex items-center gap-2 px-4 py-2 rounded-full glass-card hover:bg-softPink/20 text-navyText font-bold text-xs sm:text-sm shadow-sm transition-all">
+            <i class="fa-solid fa-globe text-pink-500"></i>
+            <span id="langBtnText">English</span>
+        </button>
+
+        <div class="flex items-center gap-3">
+            <!-- Audio Toggle Button -->
+            <button id="audioToggleBtn" onclick="toggleAudio()" class="flex items-center gap-2 px-4 py-2 rounded-full glass-card hover:bg-softPink/20 text-navyText text-xs sm:text-sm font-semibold shadow-sm transition-all">
+                <span id="audioIcon"><i class="fa-solid fa-music text-pink-400"></i></span>
+                <span id="audioText">Lofi 🎵</span>
+            </button>
+
+            <!-- Admin Settings Icon -->
+            <button onclick="openAdminModal()" class="flex items-center justify-center w-10 h-10 rounded-full glass-card hover:bg-softPink/20 text-navyText transition-all shadow-sm" title="Settings / الإعدادات">
+                <i class="fa-solid fa-gear text-slate-500 hover:rotate-90 transition-transform duration-300"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="w-full max-w-xl px-4 py-6 z-10 my-auto">
+        
+        <!-- Welcome Screen Card -->
+        <div id="welcomeCard" class="glass-card rounded-3xl p-8 text-center space-y-6 card-enter">
+            <div class="inline-block p-4 rounded-full bg-pinkLight text-softPink text-5xl mb-1 floating-element">
+                🌼🌸
+            </div>
+            
+            <div class="space-y-2">
+                <h1 class="text-3xl sm:text-4xl font-extrabold text-navyText tracking-tight font-fredoka">
+                    Do You Really Know Me?
+                </h1>
+                <p id="uiWelcomeSubtitle" class="text-sm font-semibold text-pink-500">
+                    Let's see how well you know Wafa 👀
+                </p>
+            </div>
+
+            <p id="uiWelcomeDesc" class="text-slate-600 text-xs sm:text-sm leading-relaxed max-w-md mx-auto">
+                مرحباً بك! اختبر مدى معرفتك بوفاء من خلال هذا الاختبار البسيط واللطيف ✨
+            </p>
+            </div>
+
+            <p id="uiWelcomeDesc" class="text-slate-600 text-xs sm:text-sm leading-relaxed max-w-md mx-auto">
+                مرحباً بك! اختبر مدى معرفتك بي وبشخصيتي من خلال هذا الاختبار البسيط واللطيف ✨
+            </p>
+
+            <div class="space-y-4 pt-2">
+                <input type="text" id="participantName" placeholder="أدخل اسمك أو لقبك هنا..." 
+                    class="w-full px-5 py-3.5 rounded-2xl border-2 border-softPink/60 focus:border-softPink focus:outline-none bg-white/90 text-center font-bold text-navyText placeholder-slate-400 shadow-inner text-sm sm:text-base transition-all">
+                
+                <button id="uiStartBtn" onclick="startQuiz()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-softPink to-pink-300 text-navyText font-extrabold text-base sm:text-lg shadow-lg hover:shadow-pink-200 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                    <span>START THE CHALLENGE 🚀</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Quiz Container Card -->
+        <div id="quizCard" class="glass-card rounded-3xl p-6 sm:p-8 hidden relative transition-all duration-300">
+            <!-- Progress Indicator -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center text-xs font-bold text-slate-500 mb-2">
+                    <span id="questionCounter">Question 01/10</span>
+                    <span id="progressPercent" class="text-pink-500 font-fredoka">10%</span>
+                </div>
+                <div class="w-full bg-slate-200/60 h-2.5 rounded-full overflow-hidden">
+                    <div id="progressBar" class="bg-gradient-to-r from-softPink to-pink-400 h-full rounded-full transition-all duration-400 w-1/10"></div>
+                </div>
+            </div>
+
+            <!-- Question Box -->
+            <div id="questionContainer" class="space-y-6 card-enter">
+                <h2 id="questionTitle" class="text-lg sm:text-2xl font-extrabold text-navyText text-center leading-relaxed">
+                    <!-- Question Title Loaded Dynamically -->
+                </h2>
+
+                <!-- Options Grid for Multiple Choice Questions -->
+                <div id="optionsGrid" class="grid grid-cols-1 gap-3 pt-2">
+                    <!-- Answer Cards Loaded Dynamically -->
+                </div>
+
+                <!-- Open Input Grid for Open-ended Questions -->
+                <div id="textInputGrid" class="space-y-4 hidden pt-2">
+                    <textarea id="openAnswerInput" rows="3" placeholder="اكتب إجابتك هنا بكل عفوية..." 
+                        class="w-full p-4 rounded-2xl border-2 border-softPink/60 focus:border-softPink focus:outline-none bg-white/90 text-navyText font-semibold placeholder-slate-400 shadow-inner text-sm resize-none"></textarea>
+                </div>
+
+                <!-- Navigation Controls -->
+                <div class="flex justify-between items-center gap-3 pt-4 border-t border-softPink/20">
+                    <button id="prevBtn" onclick="prevQuestion()" class="px-5 py-2.5 rounded-xl border-2 border-softPink/50 text-navyText font-bold text-xs sm:text-sm hover:bg-softPink/20 transition-all opacity-50 cursor-not-allowed" disabled>
+                        <i class="fa-solid fa-chevron-right ml-1"></i> <span id="uiPrevText">السابق</span>
+                    </button>
+
+                    <button id="nextBtn" onclick="nextQuestion()" class="px-6 py-2.5 rounded-xl bg-softPink text-navyText font-extrabold text-xs sm:text-sm hover:bg-pinkHover transition-all shadow-md opacity-50 cursor-not-allowed" disabled>
+                        <span id="uiNextText">التالي</span> <i class="fa-solid fa-chevron-left mr-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Card -->
+        <div id="resultCard" class="glass-card rounded-3xl p-6 sm:p-8 text-center space-y-6 hidden card-enter">
+            <h2 id="uiResultHeader" class="text-2xl font-black text-navyText">نتيجة التحدي ✨</h2>
+            
+            <!-- Result Custom Image Box -->
+            <div class="w-full h-48 sm:h-56 rounded-2xl overflow-hidden bg-pinkLight/50 border-2 border-softPink flex items-center justify-center relative shadow-sm">
+                <img id="resultCustomImage" src="" alt="Result Image" class="w-full h-full object-cover hidden">
+                <div id="resultFallbackIcon" class="text-6xl floating-element">🌼</div>
+            </div>
+
+            <!-- Score Display -->
+            <div class="bg-white/90 p-5 rounded-2xl border border-softPink/40 shadow-inner space-y-2">
+                <p id="resultParticipantName" class="text-base font-bold text-pink-600"></p>
+                <div class="text-3xl font-black text-navyText font-fredoka py-1">
+                    <span id="scoreText" class="text-pink-500">0</span> / <span id="totalScoreText">6</span>
+                </div>
+                <p id="resultMessageText" class="text-base sm:text-lg font-black text-pink-500 leading-snug"></p>
+            </div>
+
+            <!-- Gemini AI Dynamic Roast / Analysis Card -->
+            <div id="aiRoastContainer" class="bg-gradient-to-r from-pink-50 to-purple-50 p-4 rounded-2xl border border-pink-200 shadow-sm text-right hidden space-y-2">
+                <div class="flex items-center justify-between border-b border-pink-200/60 pb-1.5">
+                    <span class="text-xs font-extrabold text-pink-600 flex items-center gap-1.5">
+                        <i class="fa-solid fa-wand-magic-sparkles text-pink-500"></i> تحليلات و تعليق Gemini الذكي 🤖
+                    </span>
+                    <span class="text-[10px] bg-pink-100 text-pink-700 px-2 py-0.5 rounded-full font-bold">AI Powered</span>
+                </div>
+                <p id="aiRoastText" class="text-xs sm:text-sm text-slate-700 font-semibold leading-relaxed italic animate-pulse">
+                    جاري توليد التحليل الذكي من Gemini... ✨
+                </p>
+            </div>
+
+            <!-- Response Review Cards -->
+            <div id="openAnswersReview" class="space-y-2 text-right hidden">
+                <div class="bg-pinkLight/70 p-3.5 rounded-2xl text-xs border border-softPink/50">
+                    <div class="font-extrabold text-navyText border-b border-softPink/30 pb-1">✨ الشخص الشبيه بوفاء:</div>
+                    <p id="q7AnswerText" class="text-slate-700 font-semibold italic text-sm pt-1"></p>
+                </div>
+                <div class="bg-pinkLight/70 p-3.5 rounded-2xl text-xs border border-softPink/50">
+                    <div class="font-extrabold text-navyText border-b border-softPink/30 pb-1">💭 حاجة تذكرك بوفاء:</div>
+                    <p id="q8AnswerText" class="text-slate-700 font-semibold italic text-sm pt-1"></p>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="space-y-3 pt-2">
+                <button onclick="shareResults()" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-softPink to-pink-300 text-navyText font-extrabold text-sm sm:text-base shadow-md hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-share-nodes"></i>
+                    <span id="uiShareBtnText">مشاركة النتيجة / نسخ الرابط</span>
+                </button>
+                
+                <button onclick="restartQuiz()" class="w-full py-3 rounded-2xl bg-white/80 border-2 border-softPink text-navyText font-bold text-xs sm:text-sm hover:bg-softPink/20 transition-all">
+                    <span id="uiRestartBtnText">إعادة الاختبار 🔄</span>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full py-4 text-center text-xs text-slate-500 font-bold z-10">
+        Do You Really Know Me? 💕
+    </footer>
+
+    <div id="adminModal" class="fixed inset-0 bg-navyText/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto space-y-5 border-2 border-softPink shadow-2xl">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="text-base sm:text-lg font-bold text-navyText flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-softPink"></i> الإعدادات وتحديد صور النتائج
+                </h3>
+                <button onclick="closeAdminModal()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
+            </div>
+
+            <!-- Score Tier Custom Images Settings -->
+            <div class="space-y-4 bg-pinkLight/50 p-4 rounded-2xl border border-softPink/40">
+                <h4 class="font-extrabold text-xs text-navyText uppercase tracking-wider">صور مستويات النتائج (لصق مباشر / رفع صورة):</h4>
+                
+                <!-- Tier 1 -->
+                <div class="space-y-2 text-xs bg-white p-3 rounded-2xl border border-softPink/30 shadow-sm">
+                    <label class="block font-bold text-navyText">1. 90% - 100% (stalker 😉🤣🫠🫠🫠):</label>
+                    <div class="flex flex-col sm:flex-row gap-2 items-center">
+                        <div class="flex-1 w-full relative">
+                            <input type="text" id="img_tier_1" placeholder="اضغط هنا ثم Ctrl+V لصق الصورة..." class="w-full p-2.5 rounded-xl border border-softPink/50 text-xs focus:outline-none focus:border-softPink pr-16">
+                            <button type="button" onclick="pasteFromClipboard('img_tier_1', 'prev_tier_1')" class="absolute left-2 top-1.5 text-pink-600 hover:text-pink-800 text-xs font-bold bg-pinkLight px-2.5 py-1 rounded-lg border border-softPink/40 transition-all">
+                                📋 لصق
+                            </button>
+                        </div>
+                        <label class="cursor-pointer bg-softPink hover:bg-pinkHover text-navyText px-3 py-2 rounded-xl font-bold text-xs shrink-0 flex items-center gap-1 shadow-xs transition-all w-full sm:w-auto justify-center">
+                            <i class="fa-solid fa-upload"></i> اختر صورة
+                            <input type="file" accept="image/*" class="hidden" onchange="handleFileSelect(event, 'img_tier_1', 'prev_tier_1')">
+                        </label>
+                    </div>
+                    <div id="prev_tier_1" class="hidden mt-2 relative w-20 h-20 rounded-xl overflow-hidden border-2 border-softPink">
+                        <img src="" class="w-full h-full object-cover">
+                        <button onclick="clearTierImage('img_tier_1', 'prev_tier_1')" class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold shadow">&times;</button>
+                    </div>
+                </div>
+
+                <!-- Tier 2 -->
+                <div class="space-y-2 text-xs bg-white p-3 rounded-2xl border border-softPink/30 shadow-sm">
+                    <label class="block font-bold text-navyText">2. 75% - 89% (خمسة و خموس عليك 😝😂😂):</label>
+                    <div class="flex flex-col sm:flex-row gap-2 items-center">
+                        <div class="flex-1 w-full relative">
+                            <input type="text" id="img_tier_2" placeholder="اضغط هنا ثم Ctrl+V لصق الصورة..." class="w-full p-2.5 rounded-xl border border-softPink/50 text-xs focus:outline-none focus:border-softPink pr-16">
+                            <button type="button" onclick="pasteFromClipboard('img_tier_2', 'prev_tier_2')" class="absolute left-2 top-1.5 text-pink-600 hover:text-pink-800 text-xs font-bold bg-pinkLight px-2.5 py-1 rounded-lg border border-softPink/40 transition-all">
+                                📋 لصق
+                            </button>
+                        </div>
+                        <label class="cursor-pointer bg-softPink hover:bg-pinkHover text-navyText px-3 py-2 rounded-xl font-bold text-xs shrink-0 flex items-center gap-1 shadow-xs transition-all w-full sm:w-auto justify-center">
+                            <i class="fa-solid fa-upload"></i> اختر صورة
+                            <input type="file" accept="image/*" class="hidden" onchange="handleFileSelect(event, 'img_tier_2', 'prev_tier_2')">
+                        </label>
+                    </div>
+                    <div id="prev_tier_2" class="hidden mt-2 relative w-20 h-20 rounded-xl overflow-hidden border-2 border-softPink">
+                        <img src="" class="w-full h-full object-cover">
+                        <button onclick="clearTierImage('img_tier_2', 'prev_tier_2')" class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold shadow">&times;</button>
+                    </div>
+                </div>
+
+                <!-- Tier 3 -->
+                <div class="space-y-2 text-xs bg-white p-3 rounded-2xl border border-softPink/30 shadow-sm">
+                    <label class="block font-bold text-navyText">3. 55% - 74% (عيب عليك 🤨):</label>
+                    <div class="flex flex-col sm:flex-row gap-2 items-center">
+                        <div class="flex-1 w-full relative">
+                            <input type="text" id="img_tier_3" placeholder="اضغط هنا ثم Ctrl+V لصق الصورة..." class="w-full p-2.5 rounded-xl border border-softPink/50 text-xs focus:outline-none focus:border-softPink pr-16">
+                            <button type="button" onclick="pasteFromClipboard('img_tier_3', 'prev_tier_3')" class="absolute left-2 top-1.5 text-pink-600 hover:text-pink-800 text-xs font-bold bg-pinkLight px-2.5 py-1 rounded-lg border border-softPink/40 transition-all">
+                                📋 لصق
+                            </button>
+                        </div>
+                        <label class="cursor-pointer bg-softPink hover:bg-pinkHover text-navyText px-3 py-2 rounded-xl font-bold text-xs shrink-0 flex items-center gap-1 shadow-xs transition-all w-full sm:w-auto justify-center">
+                            <i class="fa-solid fa-upload"></i> اختر صورة
+                            <input type="file" accept="image/*" class="hidden" onchange="handleFileSelect(event, 'img_tier_3', 'prev_tier_3')">
+                        </label>
+                    </div>
+                    <div id="prev_tier_3" class="hidden mt-2 relative w-20 h-20 rounded-xl overflow-hidden border-2 border-softPink">
+                        <img src="" class="w-full h-full object-cover">
+                        <button onclick="clearTierImage('img_tier_3', 'prev_tier_3')" class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold shadow">&times;</button>
+                    </div>
+                </div>
+
+                <!-- Tier 4 -->
+                <div class="space-y-2 text-xs bg-white p-3 rounded-2xl border border-softPink/30 shadow-sm">
+                    <label class="block font-bold text-navyText">4. أقل من 55% (** اخس عليك بس **):</label>
+                    <div class="flex flex-col sm:flex-row gap-2 items-center">
+                        <div class="flex-1 w-full relative">
+                            <input type="text" id="img_tier_4" placeholder="اضغط هنا ثم Ctrl+V لصق الصورة..." class="w-full p-2.5 rounded-xl border border-softPink/50 text-xs focus:outline-none focus:border-softPink pr-16">
+                            <button type="button" onclick="pasteFromClipboard('img_tier_4', 'prev_tier_4')" class="absolute left-2 top-1.5 text-pink-600 hover:text-pink-800 text-xs font-bold bg-pinkLight px-2.5 py-1 rounded-lg border border-softPink/40 transition-all">
+                                📋 لصق
+                            </button>
+                        </div>
+                        <label class="cursor-pointer bg-softPink hover:bg-pinkHover text-navyText px-3 py-2 rounded-xl font-bold text-xs shrink-0 flex items-center gap-1 shadow-xs transition-all w-full sm:w-auto justify-center">
+                            <i class="fa-solid fa-upload"></i> اختر صورة
+                            <input type="file" accept="image/*" class="hidden" onchange="handleFileSelect(event, 'img_tier_4', 'prev_tier_4')">
+                        </label>
+                    </div>
+                    <div id="prev_tier_4" class="hidden mt-2 relative w-20 h-20 rounded-xl overflow-hidden border-2 border-softPink">
+                        <img src="" class="w-full h-full object-cover">
+                        <button onclick="clearTierImage('img_tier_4', 'prev_tier_4')" class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold shadow">&times;</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-3 pt-2">
+                <button onclick="saveAdminChanges()" class="flex-1 py-3 bg-softPink text-navyText font-extrabold rounded-xl hover:bg-pinkHover transition-all text-xs sm:text-sm">
+                    حفظ الصور والتعديلات 💾
+                </button>
+                <button onclick="closeAdminModal()" class="px-4 py-3 bg-slate-100 text-slate-600 font-bold rounded-xl text-xs">
+                    إلغاء
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* Multi-Language Database */
+        let currentLang = 'en'; // Default to EN for Wafa's quiz
+
+        const i18n = {
+            ar: {
+                welcomeSubtitle: "Let's see how well you know Wafa 👀",
+                welcomeDesc: "مرحباً بك! اختبر مدى معرفتك بوفاء من خلال هذا الاختبار البسيط واللطيف ✨",
+                startBtn: "START THE CHALLENGE 🚀",
+                inputPlaceholder: "أدخل اسمك أو لقبك هنا...",
+                questionOf: "السؤال",
+                of: "من",
+                prev: "السابق",
+                next: "التالي",
+                finish: "عرض النتيجة ✨",
+                resultHeader: "نتيجة التحدي ✨",
+                shareBtn: "مشاركة النتيجة / نسخ الرابط",
+                restartBtn: "إعادة الاختبار 🔄",
+                linkCopied: "تم نسخ رابط الموقع بنجاح! شاركه مع أصدقائك 💖"
+            },
+            en: {
+                welcomeSubtitle: "Let's see how well you know Wafa 👀",
+                welcomeDesc: "Welcome! Let's test how well you really know Wafa through this fun challenge ✨",
+                startBtn: "START THE CHALLENGE 🚀",
+                inputPlaceholder: "Enter your name or nickname here...",
+                questionOf: "Question",
+                of: "of",
+                prev: "Back",
+                next: "Next",
+                finish: "See Results ✨",
+                resultHeader: "Challenge Results ✨",
+                shareBtn: "Share Results / Copy Link",
+                restartBtn: "Retake Quiz 🔄",
+                linkCopied: "Link copied to clipboard! Share it with your friends 💖"
+            }
+        };
+
+        /* New Quiz Questions for Wafa */
+        const quizQuestions = [
+            {
+                id: 1,
+                ar: "🌼 Which flowers would Wafa love to receive?",
+                en: "🌼 Which flowers would Wafa love to receive?",
+                type: "mcq",
+                correct: 0,
+                options: [
+                    { ar: "A) Daisies 🌼", en: "A) Daisies 🌼", img: `<span class="text-2xl">🌼</span>` },
+                    { ar: "B) Red roses 🌹", en: "B) Red roses 🌹", img: `<span class="text-2xl">🌹</span>` },
+                    { ar: "C) Sunflowers 🌻", en: "C) Sunflowers 🌻", img: `<span class="text-2xl">🌻</span>` }
+                ]
+            },
+            {
+                id: 2,
+                ar: "🌙 What would Wafa choose for a night out?",
+                en: "🌙 What would Wafa choose for a night out?",
+                type: "mcq",
+                correct: 0,
+                options: [
+                    { ar: "A) A late-night drive with music 🚘", en: "A) A late-night drive with music 🚘", img: `<span class="text-2xl">🚘</span>` },
+                    { ar: "B) A crowded party 🎉", en: "B) A crowded party 🎉", img: `<span class="text-2xl">🎉</span>` },
+                    { ar: "C) A movie night at home 🎬", en: "C) A movie night at home 🎬", img: `<span class="text-2xl">🎬</span>` }
+                ]
+            },
+            {
+                id: 3,
+                ar: "🎧 What would Wafa most likely do in her free time?",
+                en: "🎧 What would Wafa most likely do in her free time?",
+                type: "mcq",
+                correct: 0,
+                options: [
+                    { ar: "A) Listen to her favorite songs 🎶", en: "A) Listen to her favorite songs 🎶", img: `<span class="text-2xl">🎶</span>` },
+                    { ar: "B) Read a novel 📚", en: "B) Read a novel 📚", img: `<span class="text-2xl">📚</span>` },
+                    { ar: "C) Drawing 🖌", en: "C) Drawing 🖌", img: `<span class="text-2xl">🖌</span>` }
+                ]
+            },
+            {
+                id: 4,
+                ar: "🛍️ What would Wafa spend her extra money on?",
+                en: "🛍️ What would Wafa spend her extra money on?",
+                type: "mcq",
+                correct: 0,
+                options: [
+                    { ar: "A) New clothes 👗", en: "A) New clothes 👗", img: `<span class="text-2xl">👗</span>` },
+                    { ar: "B) The latest technology 📱", en: "B) The latest technology 📱", img: `<span class="text-2xl">📱</span>` },
+                    { ar: "C) Books and courses 📖", en: "C) Books and courses 📖", img: `<span class="text-2xl">📖</span>` }
+                ]
+            },
+            {
+                id: 5,
+                ar: "💸 If Wafa won a million dollars, what would she choose?",
+                en: "💸 If Wafa won a million dollars, what would she choose?",
+                type: "mcq",
+                correct: 0,
+                options: [
+                    { ar: "A) Travel around the world 🌍", en: "A) Travel around the world 🌍", img: `<span class="text-2xl">🌍</span>` },
+                    { ar: "B) Buy her dream car 🏎️", en: "B) Buy her dream car 🏎️", img: `<span class="text-2xl">🏎️</span>` },
+                    { ar: "C) Attend exclusive celebrity events ✨", en: "C) Attend exclusive celebrity events ✨", img: `<span class="text-2xl">✨</span>` }
+                ]
+            },
+            {
+                id: 6,
+                ar: "😂 What would make Wafa happiest during a gathering?",
+                en: "😂 What would make Wafa happiest during a gathering?",
+                type: "mcq",
+                correct: 0,
+                options: [
+                    { ar: "A) Laughing with the people she loves 💚", en: "A) Laughing with the people she loves 💚", img: `<span class="text-2xl">💚</span>` },
+                    { ar: "B) Being the center of attention ⭐", en: "B) Being the center of attention ⭐", img: `<span class="text-2xl">⭐</span>` },
+                    { ar: "C) Meeting lots of new people 🌎", en: "C) Meeting lots of new people 🌎", img: `<span class="text-2xl">🌎</span>` }
+                ]
+            },
+            {
+                id: 7,
+                ar: "✨ Which famous person reminds you of Wafa, either in appearance or personality?",
+                en: "✨ Which famous person reminds you of Wafa, either in appearance or personality?",
+                type: "open"
+            },
+            {
+                id: 8,
+                ar: "💭 What is one thing that always reminds you of Wafa?",
+                en: "💭 What is one thing that always reminds you of Wafa?",
+                type: "open"
+            }
+        ];
+
+        /* Custom Result Images Storage */
+        let customTierImages = JSON.parse(localStorage.getItem('quiz_tier_images')) || {
+            tier1: '', 
+            tier2: '', 
+            tier3: '', 
+            tier4: ''  
+        };
+
+        /* State Variables */
+        let currentIndex = 0;
+        let selectedAnswers = new Array(quizQuestions.length).fill(null);
+        let participantName = "";
+
+        /* Audio Controls */
+        let audioCtx = null;
+        let isAudioPlaying = false;
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            document.getElementById('htmlRoot').dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            document.getElementById('langBtnText').innerText = currentLang === 'ar' ? 'English' : 'العربية';
+            
+            // Translate Interface Strings
+            document.getElementById('uiWelcomeSubtitle').innerText = i18n[currentLang].welcomeSubtitle;
+            document.getElementById('uiWelcomeDesc').innerText = i18n[currentLang].welcomeDesc;
+            document.getElementById('uiStartBtn').querySelector('span').innerText = i18n[currentLang].startBtn;
+            document.getElementById('participantName').placeholder = i18n[currentLang].inputPlaceholder;
+            document.getElementById('uiPrevText').innerText = i18n[currentLang].prev;
+            document.getElementById('uiResultHeader').innerText = i18n[currentLang].resultHeader;
+            document.getElementById('uiShareBtnText').innerText = i18n[currentLang].shareBtn;
+            document.getElementById('uiRestartBtnText').innerText = i18n[currentLang].restartBtn;
+
+            if (!document.getElementById('quizCard').classList.contains('hidden')) {
+                renderQuestion();
+            }
+        }
+
+        /* Particles Burst on Click */
+        function triggerParticleBurst(e) {
+            const symbols = ['🌸', '🌼', '✨', '🌙', '💖'];
+            const count = 10;
+            const rect = e.currentTarget.getBoundingClientRect();
+            const startX = e.clientX || (rect.left + rect.width / 2);
+            const startY = e.clientY || (rect.top + rect.height / 2);
+
+            for (let i = 0; i < count; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle font-fredoka font-bold';
+                particle.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 50 + Math.random() * 60;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+
+                particle.style.setProperty('--tw-x', `${tx}px`);
+                particle.style.setProperty('--tw-y', `${ty}px`);
+                particle.style.left = `${startX}px`;
+                particle.style.top = `${startY}px`;
+                particle.style.fontSize = `${12 + Math.random() * 14}px`;
+
+                document.body.appendChild(particle);
+                setTimeout(() => particle.remove(), 1600);
+            }
+        }
+
+        function startQuiz() {
+            const input = document.getElementById('participantName').value.trim();
+            if (!input) {
+                alert(currentLang === 'ar' ? 'الرجاء إدخال اسمك أولاً ✨' : 'Please enter your name first ✨');
+                return;
+            }
+            participantName = input;
+            currentIndex = 0;
+            selectedAnswers = new Array(quizQuestions.length).fill(null);
+
+            document.getElementById('welcomeCard').classList.add('hidden');
+            document.getElementById('quizCard').classList.remove('hidden');
+
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const q = quizQuestions[currentIndex];
+            const total = quizQuestions.length;
+
+            // Update Progress Header
+            document.getElementById('questionCounter').innerText = `${i18n[currentLang].questionOf} 0${currentIndex + 1}/0${total}`;
+            const pct = Math.round(((currentIndex + 1) / total) * 100);
+            document.getElementById('progressBar').style.width = `${pct}%`;
+            document.getElementById('progressPercent').innerText = `${pct}%`;
+
+            // Question Title
+            document.getElementById('questionTitle').innerText = q[currentLang];
+
+            const optionsGrid = document.getElementById('optionsGrid');
+            const textInputGrid = document.getElementById('textInputGrid');
+
+            if (q.type === 'mcq') {
+                optionsGrid.classList.remove('hidden');
+                textInputGrid.classList.add('hidden');
+                optionsGrid.innerHTML = '';
+
+                q.options.forEach((opt, idx) => {
+                    const btn = document.createElement('button');
+                    const isSelected = selectedAnswers[currentIndex] === idx;
+                    btn.className = `option-card glass-card p-3.5 rounded-2xl flex items-center justify-between text-left border-2 w-full transition-all ${isSelected ? 'selected' : 'border-transparent hover:border-softPink'}`;
+                    btn.onclick = (e) => selectOption(e, idx);
+
+                    btn.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-2xl bg-pinkLight/80 border border-softPink/50 flex items-center justify-center shrink-0 shadow-sm">
+                                ${opt.img}
+                            </div>
+                            <span class="font-bold text-navyText text-xs sm:text-sm">${opt[currentLang]}</span>
+                        </div>
+                        <span class="text-sm opacity-60">✨</span>
+                    `;
+                    optionsGrid.appendChild(btn);
+                });
+            } else {
+                optionsGrid.classList.add('hidden');
+                textInputGrid.classList.remove('hidden');
+
+                const input = document.getElementById('openAnswerInput');
+                input.value = selectedAnswers[currentIndex] || '';
+                input.oninput = (e) => {
+                    selectedAnswers[currentIndex] = e.target.value;
+                    updateNavButtons();
+                };
+            }
+
+            updateNavButtons();
+        }
+
+        function selectOption(e, idx) {
+            triggerParticleBurst(e);
+            selectedAnswers[currentIndex] = idx;
+            renderQuestion();
+        }
+
+        function updateNavButtons() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const hasAnswer = selectedAnswers[currentIndex] !== null && selectedAnswers[currentIndex] !== '';
+
+            // Previous Button State
+            if (currentIndex > 0) {
+                prevBtn.disabled = false;
+                prevBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            } else {
+                prevBtn.disabled = true;
+                prevBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+
+            // Next Button State
+            if (hasAnswer) {
+                nextBtn.disabled = false;
+                nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            } else {
+                nextBtn.disabled = true;
+                nextBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+
+            // Label for last question
+            const uiNextText = document.getElementById('uiNextText');
+            if (currentIndex === quizQuestions.length - 1) {
+                uiNextText.innerText = i18n[currentLang].finish;
+            } else {
+                uiNextText.innerText = i18n[currentLang].next;
+            }
+        }
+
+        function prevQuestion() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                renderQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (currentIndex < quizQuestions.length - 1) {
+                currentIndex++;
+                renderQuestion();
+            } else {
+                calculateAndShowResults();
+            }
+        }
+
+        function calculateAndShowResults() {
+            document.getElementById('quizCard').classList.add('hidden');
+            document.getElementById('resultCard').classList.remove('hidden');
+
+            let score = 0;
+            const mcqQuestions = quizQuestions.filter(q => q.type === 'mcq');
+            
+            mcqQuestions.forEach((q, idx) => {
+                if (selectedAnswers[idx] === q.correct) {
+                    score++;
+                }
+            });
+
+            document.getElementById('resultParticipantName').innerText = `${participantName} 💕`;
+            document.getElementById('scoreText').innerText = score;
+            document.getElementById('totalScoreText').innerText = mcqQuestions.length;
+
+            const ratio = (score / mcqQuestions.length) * 100;
+            let msg = "";
+            let customImgUrl = "";
+
+            if (ratio >= 90) {
+                msg = "stalker 😉🤣🫠🫠🫠";
+                customImgUrl = customTierImages.tier1;
+            } else if (ratio >= 75) {
+                msg = "خمسة و خموس عليك 😝😂😂";
+                customImgUrl = customTierImages.tier2;
+            } else if (ratio >= 55) {
+                msg = "عيب عليك 🤨";
+                customImgUrl = customTierImages.tier3;
+            } else {
+                msg = "** اخس عليك بس **";
+                customImgUrl = customTierImages.tier4;
+            }
+
+            document.getElementById('resultMessageText').innerText = msg;
+
+            // Handle Custom Tier Image
+            const imgEl = document.getElementById('resultCustomImage');
+            const fallbackIcon = document.getElementById('resultFallbackItem') || document.getElementById('resultFallbackIcon');
+
+            if (customImgUrl && customImgUrl.trim() !== '') {
+                imgEl.src = customImgUrl;
+                imgEl.classList.remove('hidden');
+                if (fallbackIcon) fallbackIcon.classList.add('hidden');
+            } else {
+                imgEl.classList.add('hidden');
+                if (fallbackIcon) fallbackIcon.classList.remove('hidden');
+            }
+
+            // Show Open Answers Reviews (Q7 & Q8)
+            const q7Answer = selectedAnswers[6];
+            const q8Answer = selectedAnswers[7];
+            
+            if (q7Answer || q8Answer) {
+                document.getElementById('openAnswersReview').classList.remove('hidden');
+                if (q7Answer) document.getElementById('q7AnswerText').innerText = `"${q7Answer}"`;
+                if (q8Answer) document.getElementById('q8AnswerText').innerText = `"${q8Answer}"`;
+            }
+
+            // Call Gemini API to generate custom roast/analysis
+            generateGeminiAIAnalysis(participantName, score, mcqQuestions.length, q7Answer, q8Answer);
+
+            // Trigger Celebration Confetti
+            try {
+                confetti({
+                    particleCount: 80,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#FFB6C1', '#FFF0F3', '#0F172A']
+                });
+            } catch(e){}
+        }
+
+        /* Gemini API Integration for Smart Roast / Analysis */
+        async function generateGeminiAIAnalysis(name, score, total, celebAnswer, thingAnswer) {
+            const container = document.getElementById('aiRoastContainer');
+            const textEl = document.getElementById('aiRoastText');
+            
+            container.classList.remove('hidden');
+            textEl.innerText = currentLang === 'ar' ? 'جاري توليد التحليل الذكي من Gemini... ✨' : 'Generating AI analysis with Gemini... ✨';
+            textEl.classList.add('animate-pulse');
+
+            const systemPrompt = "You are a witty, fun, and friendly AI roast companion for a personal quiz about Wafa. Respond in Arabic (or English depending on context, preferably Arabic or friendly Franco-Arab slang as requested) with a humorous, loving, and entertaining 2-sentence roast or praise based on the user's score and their answers.";
+            const userPrompt = `Participant Name: ${name}, Score: ${score}/${total}, Famous person comparison answer: "${celebAnswer || 'None'}`, Thing that reminds them of Wafa: "${thingAnswer || 'None'}". Write a funny, cute and witty review of their friendship with Wafa!`;
+
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+            const payload = {
+                contents: [{ parts: [{ text: userPrompt }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] }
+            };
+
+            let attempts = 0;
+            const maxAttempts = 3;
+            let success = false;
+
+            while (attempts < maxAttempts && !success) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) throw new Error('API Error');
+                    const result = await response.json();
+                    const candidate = result.candidates?.[0];
+
+                    if (candidate && candidate.content?.parts?.[0]?.text) {
+                        const generatedText = candidate.content.parts[0].text;
+                        textEl.innerText = generatedText;
+                        textEl.classList.remove('animate-pulse');
+                        success = true;
+                    } else {
+                        throw new Error('Invalid response structure');
+                    }
+                } catch (err) {
+                    attempts++;
+                    if (attempts >= maxAttempts) {
+                        textEl.innerText = currentLang === 'ar' 
+                            ? `علاقتك بوفاء ممتازة يا ${name}، بغض النظر عن النتيجة! 💖✨` 
+                            : `Your bond with Wafa is amazing ${name}, regardless of the score! 💖✨`;
+                        textEl.classList.remove('animate-pulse');
+                    } else {
+                        await new Promise(res => setTimeout(res, attempts * 1000));
+                    }
+                }
+            }
+        }
+
+        function restartQuiz() {
+            currentIndex = 0;
+            selectedAnswers = new Array(quizQuestions.length).fill(null);
+            document.getElementById('resultCard').classList.add('hidden');
+            document.getElementById('welcomeCard').classList.remove('hidden');
+        }
+
+        function shareResults() {
+            const dummyUrl = window.location.href;
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(dummyUrl);
+                alert(i18n[currentLang].linkCopied);
+            } else {
+                const input = document.createElement('input');
+                input.value = dummyUrl;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                alert(i18n[currentLang].linkCopied);
+            }
+        }
+
+        function toggleAudio() {
+            if (!isAudioPlaying) {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                isAudioPlaying = true;
+                document.getElementById('audioText').innerText = 'Playing 🎵';
+            } else {
+                isAudioPlaying = false;
+                document.getElementById('audioText').innerText = 'Lofi 🎵';
+            }
+        }
+
+        function openAdminModal() {
+            document.getElementById('img_tier_1').value = customTierImages.tier1 || '';
+            document.getElementById('img_tier_2').value = customTierImages.tier2 || '';
+            document.getElementById('img_tier_3').value = customTierImages.tier3 || '';
+            document.getElementById('img_tier_4').value = customTierImages.tier4 || '';
+
+            updatePreview('img_tier_1', 'prev_tier_1', customTierImages.tier1);
+            updatePreview('img_tier_2', 'prev_tier_2', customTierImages.tier2);
+            updatePreview('img_tier_3', 'prev_tier_3', customTierImages.tier3);
+            updatePreview('img_tier_4', 'prev_tier_4', customTierImages.tier4);
+
+            document.getElementById('adminModal').classList.remove('hidden');
+        }
+
+        function updatePreview(inputId, previewId, val) {
+            const prevBox = document.getElementById(previewId);
+            if (!prevBox) return;
+            const img = prevBox.querySelector('img');
+            if (val && val.trim() !== '') {
+                img.src = val;
+                prevBox.classList.remove('hidden');
+            } else {
+                img.src = '';
+                prevBox.classList.add('hidden');
+            }
+        }
+
+        function clearTierImage(inputId, previewId) {
+            document.getElementById(inputId).value = '';
+            updatePreview(inputId, previewId, '');
+        }
+
+        function handleFileSelect(event, inputId, previewId) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const dataUrl = e.target.result;
+                    document.getElementById(inputId).value = dataUrl;
+                    updatePreview(inputId, previewId, dataUrl);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        async function pasteFromClipboard(inputId, previewId) {
+            try {
+                if (navigator.clipboard && navigator.clipboard.read) {
+                    const clipboardItems = await navigator.clipboard.read();
+                    for (const item of clipboardItems) {
+                        for (const type of item.types) {
+                            if (type.startsWith('image/')) {
+                                const blob = await item.getType(type);
+                                const reader = new FileReader();
+                                reader.onload = function(evt) {
+                                    document.getElementById(inputId).value = evt.target.result;
+                                    updatePreview(inputId, previewId, evt.target.result);
+                                };
+                                reader.readAsDataURL(blob);
+                                return;
+                            }
+                        }
+                    }
+                }
+                const text = await navigator.clipboard.readText();
+                if (text) {
+                    document.getElementById(inputId).value = text;
+                    updatePreview(inputId, previewId, text);
+                }
+            } catch (err) {
+                alert('اضغط داخل حقل النص ثم استخدم الاختصار Ctrl + V لصق الصورة مباشرة 📋');
+            }
+        }
+
+        // Attach direct paste event listeners on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            ['img_tier_1', 'img_tier_2', 'img_tier_3', 'img_tier_4'].forEach((id, idx) => {
+                const input = document.getElementById(id);
+                if (!input) return;
+                const prevId = `prev_tier_${idx + 1}`;
+                input.addEventListener('paste', function(e) {
+                    const items = (e.clipboardData || e.originalEvent.clipboardData)?.items;
+                    if (items) {
+                        for (let i = 0; i < items.length; i++) {
+                            if (items[i].type.indexOf('image') !== -1) {
+                                e.preventDefault();
+                                const file = items[i].getAsFile();
+                                const reader = new FileReader();
+                                reader.onload = function(evt) {
+                                    input.value = evt.target.result;
+                                    updatePreview(id, prevId, evt.target.result);
+                                };
+                                reader.readAsDataURL(file);
+                                return;
+                            }
+                        }
+                    }
+                    setTimeout(() => {
+                        updatePreview(id, prevId, input.value);
+                    }, 50);
+                });
+            });
+        });
